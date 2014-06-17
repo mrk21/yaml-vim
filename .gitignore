@@ -1,0 +1,4 @@
+/vendor
+.vim-flavor/
+Gemfile.lock
+VimFlavor.lock
