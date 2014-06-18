@@ -24,15 +24,6 @@ function! yaml#Context(...)
       return a:indent + l:width
     endif
     
-    " mappings collection
-    if a:line =~ '^\s*[^:]\+:\s*$'
-      return a:indent + l:width
-    endif
-    
-    if a:line =~ '^\s*[^:]\+:\s\+[>|]\s*$'
-      return a:indent + l:width
-    endif
-    
     " sequence collection
     if a:line =~ '^\s*-\s*$'
       return a:indent + l:width
@@ -41,6 +32,23 @@ function! yaml#Context(...)
     if a:line =~ '^\s*-\s\+[>|]\s*$'
       return a:indent + l:width
     end
+    
+    if a:line =~ '^\s*-\s\+[^:]\+:\s*$'
+      return a:indent + 2*l:width
+    end
+    
+    if a:line =~ '^\s*-\s\+[^:]\+:\s\+.\+$'
+      return a:indent + l:width
+    end
+    
+    " mappings collection
+    if a:line =~ '^\s*[^:]\+:\s*$'
+      return a:indent + l:width
+    endif
+    
+    if a:line =~ '^\s*[^:]\+:\s\+[>|]\s*$'
+      return a:indent + l:width
+    endif
     
     " other
     return a:indent
