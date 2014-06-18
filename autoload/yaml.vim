@@ -1,36 +1,50 @@
 scriptencoding utf-8
 
-function! yaml#GetNextIndent(line, indent)
-  let l:sw = &l:shiftwidth
+function! yaml#Context(...)
+  let l:obj = {}
+  let l:obj.settings = get(a:, 1, {})
   
-  " structures
-  if a:line =~ '^---\s\+[>|]\s*$'
-    return a:indent + l:sw
-  endif
+  function l:obj.GetIndentWidth()
+    if has_key(self.settings, 'indent_width')
+      return self.settings.indent_width
+    endif
+    return &l:shiftwidth
+  endfunction
   
-  " scalar start symbols('>' and '|')
-  if a:line =~ '^[>|]\s*$'
-    return a:indent + l:sw
-  endif
+  function l:obj.GetNextIndent(line, indent)
+    let l:width = self.GetIndentWidth()
+    
+    " structures
+    if a:line =~ '^---\s\+[>|]\s*$'
+      return a:indent + l:width
+    endif
+    
+    " scalar start symbols('>' and '|')
+    if a:line =~ '^[>|]\s*$'
+      return a:indent + l:width
+    endif
+    
+    " mappings collection
+    if a:line =~ '^\s*[^:]\+:\s*$'
+      return a:indent + l:width
+    endif
+    
+    if a:line =~ '^\s*[^:]\+:\s\+[>|]\s*$'
+      return a:indent + l:width
+    endif
+    
+    " sequence collection
+    if a:line =~ '^\s*-\s*$'
+      return a:indent + l:width
+    end
+    
+    if a:line =~ '^\s*-\s\+[>|]\s*$'
+      return a:indent + l:width
+    end
+    
+    " other
+    return a:indent
+  endfunction
   
-  " mappings collection
-  if a:line =~ '^\s*[^:]\+:\s*$'
-    return a:indent + l:sw
-  endif
-  
-  if a:line =~ '^\s*[^:]\+:\s\+[>|]\s*$'
-    return a:indent + l:sw
-  endif
-  
-  " sequence collection
-  if a:line =~ '^\s*-\s*$'
-    return a:indent + l:sw
-  end
-  
-  if a:line =~ '^\s*-\s\+[>|]\s*$'
-    return a:indent + l:sw
-  end
-  
-  " other
-  return a:indent
+  return l:obj
 endfunction

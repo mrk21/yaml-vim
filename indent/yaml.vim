@@ -15,10 +15,11 @@ setlocal noautoindent
 setlocal nosmartindent
 
 setlocal indentexpr=g:GetYamlIndent(v:lnum)
+let b:yaml_context = yaml#Context()
 
 function! g:GetYamlIndent(lnum)
   let l:prevlnum = a:lnum - 1
   let l:prevline = getline(l:prevlnum)
   let l:previndent = indent(l:prevlnum)
-  return yaml#GetNextIndent(l:prevline, l:previndent)
+  return b:yaml_context.GetNextIndent(l:prevline, l:previndent)
 endfunction
