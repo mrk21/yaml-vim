@@ -86,6 +86,20 @@ describe 'Context'
         Expect copy(b:subject).GetNextIndent('- ', 0) == 2
       end
       
+      context 'with mappings collection'
+        it 'should do indent'
+          Expect copy(b:subject).GetNextIndent('- hoge: 1', 0) == 2
+          Expect copy(b:subject).GetNextIndent('- hoge: 1 ', 0) == 2
+        end
+        
+        context 'when it was without a value part'
+          it 'should do double indent'
+            Expect copy(b:subject).GetNextIndent('- hoge:', 0) == 4
+            Expect copy(b:subject).GetNextIndent('- hoge: ', 0) == 4
+          end
+        end
+      end
+      
       context 'with scalar start symbols(">" and "|")'
         it 'should do indent'
           Expect copy(b:subject).GetNextIndent("- \>", 0) == 2
