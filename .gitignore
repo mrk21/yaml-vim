@@ -1,4 +1,4 @@
-/vendor
+/vendor/bundle
 .vim-flavor/
 Gemfile.lock
 VimFlavor.lock
