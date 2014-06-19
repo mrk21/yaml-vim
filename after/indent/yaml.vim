@@ -1,11 +1,5 @@
 scriptencoding utf-8
 
-if exists('b:did_indent')
-  finish
-endif
-
-let b:did_indent = 1
-
 setlocal tabstop=2
 setlocal softtabstop=2
 setlocal shiftwidth=2
@@ -23,3 +17,13 @@ function! g:GetYamlIndent(lnum)
   let l:previndent = indent(l:prevlnum)
   return b:yaml_context.GetNextIndent(l:prevline, l:previndent)
 endfunction
+
+if !exists('b:undo_indent')
+  let b:undo_indent = ''
+endif
+
+let b:undo_indent .= '| setlocal '.join([
+      \ 'tabstop<',
+      \ 'softtabstop<',
+      \ 'shiftwidth<',
+      \])
