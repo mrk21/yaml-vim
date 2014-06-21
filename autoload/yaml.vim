@@ -1,5 +1,9 @@
 scriptencoding utf-8
 
+let s:tag_regexp = '!\{1,2\}[^! ]\+!\?'
+let s:scalar_regexp = '[|>]\%([+-]\=[1-9]\|[1-9]\=[+-]\)\='
+let s:tag_and_scalar_regexp = '\(\('. s:tag_regexp .'\)\s\+\)\?'. s:scalar_regexp
+
 function! yaml#Context(...)
   let l:obj = {}
   let l:obj.settings = get(a:, 1, {})
@@ -15,12 +19,12 @@ function! yaml#Context(...)
     let l:width = self.GetIndentWidth()
     
     " structures
-    if a:line =~ '^---\s\+[>|]\s*$'
+    if a:line =~ '^---\s\+'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     endif
     
     " scalar start symbols('>' and '|')
-    if a:line =~ '^[>|]\s*$'
+    if a:line =~ '^'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     endif
     
@@ -29,11 +33,23 @@ function! yaml#Context(...)
       return a:indent + l:width
     end
     
-    if a:line =~ '^\s*-\s\+[>|]\s*$'
+    if a:line =~ '^\s*-\s\+'. s:tag_regexp .'\s*$'
+      return a:indent + l:width
+    end
+    
+    if a:line =~ '^\s*-\s\+'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     end
     
     if a:line =~ '^\s*-\s\+[^:]\+:\s*$'
+      return a:indent + 2*l:width
+    end
+    
+    if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tag_regexp .'\s*$'
+      return a:indent + 2*l:width
+    end
+    
+    if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + 2*l:width
     end
     
@@ -46,7 +62,11 @@ function! yaml#Context(...)
       return a:indent + l:width
     endif
     
-    if a:line =~ '^\s*[^:]\+:\s\+[>|]\s*$'
+    if a:line =~ '^\s*[^:]\+:\s\+'. s:tag_regexp .'\s*$'
+      return a:indent + l:width
+    endif
+    
+    if a:line =~ '^\s*[^:]\+:\s\+'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     endif
     
