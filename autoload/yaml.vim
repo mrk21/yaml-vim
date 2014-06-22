@@ -18,59 +18,72 @@ function! yaml#Context(...)
   function l:obj.GetNextIndent(line, indent)
     let l:width = self.GetIndentWidth()
     
-    " structures
+    
+    " ### structures ###
     if a:line =~ '^---\s\+'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     endif
     
-    " scalar start symbols('>' and '|')
+    
+    " ### scalar start symbols('>' and '|') ###
     if a:line =~ '^'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     endif
     
-    " sequence collection
+    
+    " ### sequence collection ###
     if a:line =~ '^\s*-\s*$'
       return a:indent + l:width
     end
     
+    " tag
     if a:line =~ '^\s*-\s\+'. s:tag_regexp .'\s*$'
       return a:indent + l:width
     end
     
+    " tag and scalar
     if a:line =~ '^\s*-\s\+'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     end
     
+    " mapping
     if a:line =~ '^\s*-\s\+[^:]\+:\s*$'
       return a:indent + 2*l:width
     end
     
+    " mapping and tag
     if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tag_regexp .'\s*$'
       return a:indent + 2*l:width
     end
     
+    " mapping and tag and block scalar
     if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + 2*l:width
     end
     
+    " mapping and flow scalar
     if a:line =~ '^\s*-\s\+[^:]\+:\s\+.\+$'
       return a:indent + l:width
     end
     
-    " mappings collection
+    
+    " ### mappings collection ###
     if a:line =~ '^\s*[^:]\+:\s*$'
       return a:indent + l:width
     endif
     
+    " tag
     if a:line =~ '^\s*[^:]\+:\s\+'. s:tag_regexp .'\s*$'
       return a:indent + l:width
     endif
     
+    " tag and block scalar
     if a:line =~ '^\s*[^:]\+:\s\+'. s:tag_and_scalar_regexp .'\s*$'
       return a:indent + l:width
     endif
     
-    " other
+    
+    " ### other ###
     return a:indent
   endfunction
   
