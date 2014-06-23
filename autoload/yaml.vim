@@ -1,8 +1,9 @@
 scriptencoding utf-8
 
-let s:tag_regexp = '!\{1,2\}[^! ]\+!\?'
-let s:scalar_regexp = '[|>]\%([+-]\=[1-9]\|[1-9]\=[+-]\)\='
-let s:tag_and_scalar_regexp = '\(\('. s:tag_regexp .'\)\s\+\)\?'. s:scalar_regexp
+let s:tags_regexp = '!\{1,2\}[^! ]\+!\?'
+let s:block_scalar_headers_regexp = '[|>]\%([+-]\=[1-9]\|[1-9]\=[+-]\)\='
+let s:tags_and_block_scalar_headers_regexp =
+      \ '\(\('. s:tags_regexp .'\)\s\+\)\?'. s:block_scalar_headers_regexp
 
 function! yaml#Context(...)
   let l:obj = {}
@@ -19,71 +20,71 @@ function! yaml#Context(...)
     let l:width = self.GetIndentWidth()
     
     
-    " ### structures ###
-    if a:line =~ '^---\s\+'. s:tag_and_scalar_regexp .'\s*$'
+    " ### The structures ###
+    if a:line =~ '^---\s\+'. s:tags_and_block_scalar_headers_regexp .'\s*$'
       return a:indent + l:width
     endif
     
     
-    " ### scalar start symbols('>' and '|') ###
-    if a:line =~ '^'. s:tag_and_scalar_regexp .'\s*$'
+    " ### The block scalar headers('>' and '|') ###
+    if a:line =~ '^'. s:tags_and_block_scalar_headers_regexp .'\s*$'
       return a:indent + l:width
     endif
     
     
-    " ### sequence collection ###
+    " ### The sequences ###
     if a:line =~ '^\s*-\s*$'
       return a:indent + l:width
     end
     
-    " tag
-    if a:line =~ '^\s*-\s\+'. s:tag_regexp .'\s*$'
+    " with the tags
+    if a:line =~ '^\s*-\s\+'. s:tags_regexp .'\s*$'
       return a:indent + l:width
     end
     
-    " tag and scalar
-    if a:line =~ '^\s*-\s\+'. s:tag_and_scalar_regexp .'\s*$'
+    " with the tags and the block scalar headers
+    if a:line =~ '^\s*-\s\+'. s:tags_and_block_scalar_headers_regexp .'\s*$'
       return a:indent + l:width
     end
     
-    " mapping
+    " with the mappings
     if a:line =~ '^\s*-\s\+[^:]\+:\s*$'
       return a:indent + 2*l:width
     end
     
-    " mapping and tag
-    if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tag_regexp .'\s*$'
+    " with the mappings and the tags
+    if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tags_regexp .'\s*$'
       return a:indent + 2*l:width
     end
     
-    " mapping and tag and block scalar
-    if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tag_and_scalar_regexp .'\s*$'
+    " with the mappings, the tags and the block scalar headers
+    if a:line =~ '^\s*-\s\+[^:]\+:\s*'. s:tags_and_block_scalar_headers_regexp .'\s*$'
       return a:indent + 2*l:width
     end
     
-    " mapping and flow scalar
+    " with the mappings and the flow scalars
     if a:line =~ '^\s*-\s\+[^:]\+:\s\+.\+$'
       return a:indent + l:width
     end
     
     
-    " ### mappings collection ###
+    " ### The mappings ###
     if a:line =~ '^\s*[^:]\+:\s*$'
       return a:indent + l:width
     endif
     
-    " tag
-    if a:line =~ '^\s*[^:]\+:\s\+'. s:tag_regexp .'\s*$'
+    " with the tags
+    if a:line =~ '^\s*[^:]\+:\s\+'. s:tags_regexp .'\s*$'
       return a:indent + l:width
     endif
     
-    " tag and block scalar
-    if a:line =~ '^\s*[^:]\+:\s\+'. s:tag_and_scalar_regexp .'\s*$'
+    " with the tags and the block scalar headers
+    if a:line =~ '^\s*[^:]\+:\s\+'. s:tags_and_block_scalar_headers_regexp .'\s*$'
       return a:indent + l:width
     endif
     
     
-    " ### other ###
+    " ### others ###
     return a:indent
   endfunction
   

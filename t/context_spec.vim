@@ -6,20 +6,20 @@ describe 'Context'
   end
   
   describe '#GetNextIndent(line, indent)'
-    context 'when the `line` was structures'
+    context 'when the `line` was the structures'
       it 'should do not indent'
         Expect copy(b:subject).GetNextIndent('---', 0) == 0
         Expect copy(b:subject).GetNextIndent('--- ', 0) == 0
       end
       
-      context 'with tags'
+      context 'with the tags'
         it 'should do not indent'
           Expect copy(b:subject).GetNextIndent('--- !!tag', 0) == 0
           Expect copy(b:subject).GetNextIndent('--- !!tag ', 0) == 0
         end
       end
       
-      context 'with scalar start symbols(">" and "|")'
+      context 'with the block scalar headers(">" and "|")'
         it 'should do indent'
           Expect copy(b:subject).GetNextIndent("--- \>", 0) == 2
           Expect copy(b:subject).GetNextIndent("--- \> ", 0) == 2
@@ -28,7 +28,7 @@ describe 'Context'
           Expect copy(b:subject).GetNextIndent('--- | ', 0) == 2
         end
         
-        context 'when tags existed before it'
+        context 'when the tags existed before it'
           it 'should do indent'
             Expect copy(b:subject).GetNextIndent("--- !!tag \>", 0) == 2
             Expect copy(b:subject).GetNextIndent("--- !!tag \> ", 0) == 2
@@ -38,7 +38,7 @@ describe 'Context'
           end
         end
         
-        context 'when not existed spaces before the scalar start symbols'
+        context 'when not existed spaces before the block scalar headers'
           it 'should do not indent'
             Expect copy(b:subject).GetNextIndent("---\>", 0) == 0
             Expect copy(b:subject).GetNextIndent("---\> ", 0) == 0
@@ -50,7 +50,7 @@ describe 'Context'
       end
     end
     
-    context 'when the `line` was scalar start symbols(">" and "|")'
+    context 'when the `line` was the block scalar headers(">" and "|")'
       it 'should do indent'
         Expect copy(b:subject).GetNextIndent("\>", 0) == 2
         Expect copy(b:subject).GetNextIndent("\> ", 0) == 2
@@ -59,7 +59,7 @@ describe 'Context'
         Expect copy(b:subject).GetNextIndent('| ', 0) == 2
       end
       
-      context 'when tags existed before it'
+      context 'when the tags existed before it'
         it 'should do indent'
           Expect copy(b:subject).GetNextIndent("!!tag \>", 0) == 2
           Expect copy(b:subject).GetNextIndent("!!tag \> ", 0) == 2
@@ -69,7 +69,7 @@ describe 'Context'
         end
       end
       
-      context 'when existed spaces before the scalar start symbols'
+      context 'when existed spaces before the block scalar headers'
         it 'should do not indent'
           Expect copy(b:subject).GetNextIndent(" \>", 0) == 0
           Expect copy(b:subject).GetNextIndent(" \> ", 0) == 0
@@ -80,20 +80,20 @@ describe 'Context'
       end
     end
     
-    context 'when the `line` was mappings collection'
+    context 'when the `line` was the block mappings'
       it 'should do indent'
         Expect copy(b:subject).GetNextIndent('hoge:', 0) == 2
         Expect copy(b:subject).GetNextIndent('hoge: ', 0) == 2
       end
       
-      context 'with tags'
+      context 'with the tags'
         it 'should do indent'
           Expect copy(b:subject).GetNextIndent('hoge: !!tag', 0) == 2
           Expect copy(b:subject).GetNextIndent('hoge: !!tag ', 0) == 2
         end
       end
       
-      context 'with scalar start symbols(">" and "|")'
+      context 'with the block scalar headers(">" and "|")'
         it 'should do indent'
           Expect copy(b:subject).GetNextIndent("hoge: \>", 0) == 2
           Expect copy(b:subject).GetNextIndent("hoge: \> ", 0) == 2
@@ -102,7 +102,7 @@ describe 'Context'
           Expect copy(b:subject).GetNextIndent('hoge: | ', 0) == 2
         end
         
-        context 'when tags existed before it'
+        context 'when the tags existed before it'
           it 'should do indent'
             Expect copy(b:subject).GetNextIndent("hoge: !!tag \>", 0) == 2
             Expect copy(b:subject).GetNextIndent("hoge: !!tag \> ", 0) == 2
@@ -112,7 +112,7 @@ describe 'Context'
           end
         end
         
-        context 'when not existed spaces between ":" and the scalar start symbols'
+        context 'when not existed spaces between ":" and the block scalar headers'
           it 'should do not indent'
             Expect copy(b:subject).GetNextIndent("hoge:\>", 0) == 0
             Expect copy(b:subject).GetNextIndent("hoge:\> ", 0) == 0
@@ -124,26 +124,26 @@ describe 'Context'
       end
     end
     
-    context 'when the `line` was sequence collection'
+    context 'when the `line` was the block sequences'
       it 'should do indent'
         Expect copy(b:subject).GetNextIndent('-', 0) == 2
         Expect copy(b:subject).GetNextIndent('- ', 0) == 2
       end
       
-      context 'with tags'
+      context 'with the tags'
         it 'should do indent'
           Expect copy(b:subject).GetNextIndent('- !!tag', 0) == 2
           Expect copy(b:subject).GetNextIndent('- !!tag ', 0) == 2
         end
       end
       
-      context 'with mappings collection'
+      context 'with the block mappings'
         it 'should do double indent'
           Expect copy(b:subject).GetNextIndent('- hoge:', 0) == 4
           Expect copy(b:subject).GetNextIndent('- hoge: ', 0) == 4
         end
         
-        context 'with tags'
+        context 'with the tags'
           it 'should do double indent'
             Expect copy(b:subject).GetNextIndent('- hoge: !!tag', 0) == 4
             Expect copy(b:subject).GetNextIndent('- hoge: !!tag ', 0) == 4
@@ -156,7 +156,7 @@ describe 'Context'
             Expect copy(b:subject).GetNextIndent('- hoge: 1 ', 0) == 2
           end
           
-          context 'with tags'
+          context 'with the tags'
             it 'should do indent'
               Expect copy(b:subject).GetNextIndent('- hoge: !!tag 1', 0) == 2
               Expect copy(b:subject).GetNextIndent('- hoge: !!tag 1 ', 0) == 2
@@ -164,13 +164,13 @@ describe 'Context'
           end
         end
         
-        context 'with scalar start symbols'
+        context 'with the block scalar headers'
           it 'should do double indent'
             Expect copy(b:subject).GetNextIndent("- hoge: \>", 0) == 4
             Expect copy(b:subject).GetNextIndent("- hoge: \> ", 0) == 4
           end
           
-          context 'when tags existed before it'
+          context 'when the tags existed before it'
             it 'should do indent'
               Expect copy(b:subject).GetNextIndent("- hoge: !!tag \>", 0) == 4
               Expect copy(b:subject).GetNextIndent("- hoge: !!tag \> ", 0) == 4
@@ -179,7 +179,7 @@ describe 'Context'
         end
       end
       
-      context 'with scalar start symbols(">" and "|")'
+      context 'with the block scalar headers(">" and "|")'
         it 'should do indent'
           Expect copy(b:subject).GetNextIndent("- \>", 0) == 2
           Expect copy(b:subject).GetNextIndent("- \> ", 0) == 2
@@ -188,7 +188,7 @@ describe 'Context'
           Expect copy(b:subject).GetNextIndent('- | ', 0) == 2
         end
         
-        context 'when tags existed before it'
+        context 'when the tags existed before it'
           it 'should do indent'
             Expect copy(b:subject).GetNextIndent("- !!tag \>", 0) == 2
             Expect copy(b:subject).GetNextIndent("- !!tag \> ", 0) == 2
@@ -198,7 +198,7 @@ describe 'Context'
           end
         end
         
-        context 'when not existed spaces between "-" and the scalar start symbols'
+        context 'when not existed spaces between "-" and the block scalar headers'
           it 'should do not indent'
             Expect copy(b:subject).GetNextIndent("-\>", 0) == 0
             Expect copy(b:subject).GetNextIndent("-\> ", 0) == 0
